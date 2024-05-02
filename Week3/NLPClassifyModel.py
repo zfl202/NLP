@@ -13,8 +13,8 @@ class NLPClassifyModel(nn.Module):
     def __init__(self, vocabDict, vectorDim, sentenceLength, output_size):
         super().__init__()
         self.vocabDict = vocabDict
-        self.embedding = nn.Embedding(len(vocabDict), vectorDim)  # embedding层
-        self.avgpool = nn.AvgPool1d(sentenceLength)  # 池化层
+        self.embedding = nn.Embedding(len(vocabDict), vectorDim)  # embedding layer
+        self.avgpool = nn.AvgPool1d(sentenceLength)  # avg pooling layer
         self.linear1 = nn.Linear(vectorDim, 15)
         self.activation = torch.sigmoid
         self.linear2 = nn.Linear(15, 15)
