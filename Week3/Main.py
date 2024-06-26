@@ -28,11 +28,14 @@ class Solution(object):
         nlp_model.saveModelWeights(model_path)
 
         loadedVocabDict = ndg.loadVocabDict(localVocabDictPath)
-        X_valid, Y_valid = ndg.generateValidationData(vocabDict, sentenceLength)
+        X_valid_str, Y_valid = ndg.generateValidationString(vocabDict, sentenceLength)
         loadedModel = NLPClassifyModel(loadedVocabDict, vectorDim, sentenceLength, output_size)
         loadedModel.loadModelWeights(model_path)
         sentenceTypeDict = {0: "BadWords", 1: "GoodWords", 2: "NormalWords"}
-        loadedModel.calAccuracy(X_valid, Y_valid, True, sentenceTypeDict)
+        for i in range(len(Y_valid)):
+            x_valid = [loadedVocabDict.get(key, loadedVocabDict['unk']) for key in X_valid_str[i]]  # string (key) to index (value)
+            y_valid = Y_valid[i]
+            loadedModel.calAccuracy(torch.LongTensor([x_valid]), torch.FloatTensor([y_valid]), True, sentenceTypeDict)
 
         nlp_model.plotMetric(history, True)
 

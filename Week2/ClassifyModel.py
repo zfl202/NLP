@@ -35,9 +35,8 @@ class ClassifyModel(nn.Module):
         num_examples = labels.shape[0]
         indices = list(range(num_examples))
         random.shuffle(indices)
-        for i in range(0, num_examples, batch_size):
-            batch_indices = torch.tensor(
-                indices[i: min(i + batch_size, num_examples)])
+        for i in range(0, num_examples//batch_size):
+            batch_indices = torch.tensor(indices[i*batch_size: min(i*batch_size + batch_size, num_examples)])
             yield features[batch_indices], labels[batch_indices]
 
     def fit(self, x, y, epoch, learning_rate, batch_size):

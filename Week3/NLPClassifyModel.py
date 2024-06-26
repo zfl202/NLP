@@ -14,7 +14,7 @@ class NLPClassifyModel(nn.Module):
         super().__init__()
         self.vocabDict = vocabDict
         self.embedding = nn.Embedding(len(vocabDict), vectorDim)  # embedding layer
-        self.avgpool = nn.AvgPool1d(sentenceLength)  # avg pooling layer
+        # self.avgpool = nn.AvgPool1d(sentenceLength)  # avg pooling layer
         self.linear1 = nn.Linear(vectorDim, 15)
         self.activation = torch.sigmoid
         self.linear2 = nn.Linear(15, 15)
@@ -25,7 +25,9 @@ class NLPClassifyModel(nn.Module):
 
     def forward(self, x):
         x = self.embedding(x)
-        x = self.avgpool(x.transpose(1, 2)).squeeze(2)
+        # x = self.avgpool(x.transpose(1, 2)).squeeze(2)
+        x = torch.mean(x, dim=1)
+
         x = self.activation(self.linear1(x))
         x = self.activation(self.linear2(x))
         # x = self.activation(self.linear3(x))
@@ -41,8 +43,7 @@ class NLPClassifyModel(nn.Module):
         indices = list(range(num_examples))
         random.shuffle(indices)
         for i in range(0, num_examples, batch_size):
-            batch_indices = torch.tensor(
-                indices[i: min(i + batch_size, num_examples)])
+            batch_indices = torch.tensor(indices[i: min(i + batch_size, num_examples)])
             yield features[batch_indices], labels[batch_indices]
 
     def fit(self, x, y, epoch, learning_rate, batch_size):

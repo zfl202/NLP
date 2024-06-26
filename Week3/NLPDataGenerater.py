@@ -38,23 +38,28 @@ class NLPDataGenerater(object):
     def generateTrainingData(self, num, vocabDict, sentence_length):
         X = list()
         Y = list()
+        type1, type2, type3 = 0, 0, 0
         for i in range(num):
             sentence = [random.choice(list(vocabDict.keys())) for _ in range(sentence_length)]  # random generate string
             if set("fuck") & set(sentence):
                 y = [1, 0, 0]
+                type1 = type1 + 1
             elif set("good") & set(sentence):
                 y = [0, 1, 0]
+                type2 = type2 + 1
             else:
                 y = [0, 0, 1]
+                type3 = type3 + 1
             x = [vocabDict.get(key, vocabDict['unk']) for key in sentence]  # string (key) to index (value)
             X.append(x)
             Y.append(y)
+        print(f"type1: {type1}, type2: {type2}, type3: {type3}, total:{type1+type2+type3}")
         return (torch.LongTensor(X), torch.FloatTensor(Y))
 
-    def generateValidationData(self, vocabDict, sentence_length):
+    def generateValidationString(self, vocabDict, sentence_length):
         X = list()
         Y = list()
-        sentences = ["fuckyou", "goodman", "fukkyou", "nxxxman", "jacyqqq", "gotltmm", "arenigd", "abyzzzx"]
+        sentences = ["fuckyouqqqqqqqqqqqqqqqqqqqq", "goodmanyyyyyyyy", "fukkyouqqq", "nxxxman", "jacyqqq", "gotltmmyyyyyyyyyyyy", "arenigd", "abyzzzx","f","xx"]
         for sentence in sentences:
             if set("fuck") & set(sentence):
                 y = [1, 0, 0]
@@ -62,7 +67,8 @@ class NLPDataGenerater(object):
                 y = [0, 1, 0]
             else:
                 y = [0, 0, 1]
-            x = [vocabDict.get(key, vocabDict['unk']) for key in sentence]  # string (key) to index (value)
-            X.append(x)
+            # x = [vocabDict.get(key, vocabDict['unk']) for key in sentence]  # string (key) to index (value)
+            X.append(sentence)
             Y.append(y)
-        return (torch.LongTensor(X), torch.FloatTensor(Y))
+        return (X, Y)
+        # return (torch.LongTensor(X), torch.FloatTensor(Y))
